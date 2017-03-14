@@ -1,0 +1,121 @@
+
+
+
+Random Forest Model
++ feature: Pclass, Age(fill null with mean), Sex (map to female: 0, male: 1), Sibsp, Parch
+     Best score: 0.828282828283
+     Best parameters: {'n_estimators': 240, 'criterion': 'gini', 'max_depth': 4}
+
++ age fill with median (28) not mean (29.4)
+     Best score: 0.830527497194
+     Best parameters: {'n_estimators': 210, 'criterion': 'gini', 'max_depth': 4}
+
+     2933 214 laura_zoe laura 0.77990 6 now
+
+- Add PassengerId because of
+    feature	importance
+    0	PassengerId	0.285551
+    2	Sex	0.284511
+    3	Age	0.223955
+    1	Pclass	0.112619
+    4	SibSp	0.051341
+    5	Parch	0.042023
+
+     Best score: 0.802469135802
+     Best parameters: {'n_estimators': 240, 'criterion': 'gini', 'max_depth': 4}
+
+     submission score is 0.75598
+
+- age fill missing value by imputation from other variables (df.corr-> Pclass, SibSp, Parch)
+    excluding Fare because it's kind of duplicated as Pclass and also have missing value
+
+    Best score: 0.826038159371
+    Best parameters: {'n_estimators': 200, 'criterion': 'gini', 'max_depth': 4}
+
+- age fill missing value by imputation ExtraTreesRegressor
+    Best score: 0.83164983165
+    Best parameters: {'n_estimators': 200, 'criterion': 'gini', 'max_depth': 4}
+
+
+- age: directly drop missing values
+    Best score: 0.823529411765
+    Best parameters: {'n_estimators': 250, 'criterion': 'gini', 'max_depth': 4}
+
+
+- code from https://github.com/ahmedbesbes/post1/blob/master/titanic-article.ipynb
+    Best score: 0.835016835017
+    Best parameters: {'n_estimators': 200, 'criterion': 'gini', 'max_depth': 4}
+
+    Your Best Entry (Rank 1600)
+    Your submission scored 0.79426, which is an improvement of your previous score of 0.77990 score. Great job!
+
+
+- code from kaggle leaderboard (https://www.kaggle.com/francksylla/titanic/titanic-machine-learning-from-disaster/run/565801)
+    RandomForestClassifier(n_estimators=3000, min_samples_split=4, class_weight={0: 0.745, 1: 0.255})
+    Accuracy: 89.675 (+/- 0.97) [RFC Cross Validation]
+    Accuracy: 96.409            [RFC full test]
+
+    same result as n_estimators=250
+
+    Your Best Entry (Rank 138)
+    Your submission scored 0.82775, which is an improvement of your previous score of 0.79426 score. Great job!
+
+
+    If use default :
+    RandomForestClassifier()
+    Accuracy: 87.654 (+/- 0.42) [RFC Cross Validation]
+    Accuracy: 98.429            [RFC full test]
+
+    RandomForestClassifier(n_estimators=3000)
+    Accuracy: 88.777 (+/- 0.97) [RFC Cross Validation]
+    Accuracy: 99.551            [RFC full test]
+
+    RandomForestClassifier(n_estimators=3000, min_samples_split=4)
+    Accuracy: 89.450 (+/- 1.24) [RFC Cross Validation]
+    Accuracy: 97.082            [RFC full test]
+
+    RandomForestClassifier(n_estimators=3000, min_samples_split=4, class_weight='balanced')
+    Accuracy: 88.777 (+/- 0.97) [RFC Cross Validation]
+    Accuracy: 97.643            [RFC full test]
+
+    GridSearchCV
+    parameter_grid = {
+        'max_depth': [4, 6, 8, None],
+        'n_estimators': [200, 240, 250, 3000],
+        'min_samples_split': [2, 4],
+        'criterion': ['gini', 'entropy'],
+        'class_weight': [{0: 0.745, 1: 0.255}, 'balanced', None]
+    }
+
+    cross_validation.KFold
+    Best score: 0.89898989899
+    Best parameters: {'min_samples_split': 4, 'n_estimators': 250, 'criterion': 'entropy', 'max_depth': 8, 'class_weight': 'balanced'}
+    ???get different score at two times
+
+    cross_validation.StratifiedKFold (similar as cross_validation.cross_val_score)
+    Best score: 0.897867564534
+    Best parameters: {'min_samples_split': 4, 'n_estimators': 250, 'criterion': 'entropy', 'max_depth': None, 'class_weight': {0: 0.745, 1: 0.255}}
+
+
+
+Try but no change:
+    1. normalize the feature by x/max --> no change
+
+
+QA:
+1.
+How to evaluate the performance of a model?
+How to split and use train data, test data?
+Cross_validate: best score or average score?
+
+
+Code:
+data.corr()
+
+data['Age'].value_counts
+plt.figure()
+data['Age'].plot.hist(alpha=0.5)
+data.describe()
+data['Age'].mean()
+
+train.dropna(inplace=True)
